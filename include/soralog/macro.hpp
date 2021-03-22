@@ -24,8 +24,9 @@
 
 namespace soralog::macro {
   template <typename Logger, typename... Args>
-  inline void proxy(const std::shared_ptr<Logger> &log, soralog::Level level,
-                    std::string_view fmt, Args &&... args) {
+  inline void proxy(const std::shared_ptr<Logger> &log,
+                    soralog::Level level, std::string_view fmt,
+                    Args &&... args) {
     if (log->level() >= level) {
       log->log(level, fmt, std::move(args)()...);
     }
@@ -71,36 +72,14 @@ namespace soralog::macro {
 
 #define _SL_WRAP_ARGS(...) , ##__VA_ARGS__
 
-#define _SL_LOG(LOG, LVL, FMT, ...)   \
+#define _SL_LOG(LOG, LVL, FMT, ...)    \
   soralog::macro::proxy((LOG), (LVL), \
                         (FMT)_SL_WRAP(Z _SL_WRAP_ARGS(__VA_ARGS__)))
 
-#define SL_LOG(LOG, LVL, FMT, ...) \
+#define SL_LOG(LOG, LVL, FMT, ...)    \
   _SL_LOG((LOG), (LVL), (FMT), ##__VA_ARGS__, Z)
 
-/* You can use cmake options WITHOUT_TRACE_LOG_LEVEL and WITHOUT_DEBUG_LOG_LEVEL
-   to remove (or not) debug and trace messages. See next cmake code for example:
-
-option(WITHOUT_TRACE_LOG_LEVEL "Build without trace macro"        OFF)
-option(WITHOUT_DEBUG_LOG_LEVEL "Build without debug macro"        OFF)
-if (WITHOUT_TRACE_LOG_LEVEL AND NOT WITHOUT_DEBUG_LOG_LEVEL)
-    set(WITHOUT_TRACE_LOG_LEVEL OFF)
-    message(STATUS "Trace level have switched off, because bebug level is off")
-endif() if (WITHOUT_TRACE_LOG_LEVEL)
-    add_compile_definitions(WITHOUT_TRACE_LOG_LEVEL)
-endif()
-if (WITHOUT_DEBUG_LOG_LEVEL)
-    add_compile_definitions(WITHOUT_DEBUG_LOG_LEVEL)
-endif()
-
-*/
-
-#if defined(WITHOUT_DEBUG_LOG_LEVEL) and not defined(WITHOUT_TRACE_LOG_LEVEL)
-#warning "Trace log level have switched off, because bebug log level is off"
-#undef WITHOUT_DEBUG_LOG_LEVEL
-#endif
-
-#ifndef WITHOUT_TRACE_LOG_LEVEL
+#ifndef NDEBUG
 #define SL_TRACE(LOG, FMT, ...) \
   _SL_LOG((LOG), soralog::Level::TRACE, (FMT), ##__VA_ARGS__, Z)
 #else
@@ -110,9 +89,6 @@ endif()
 #ifndef WITHOUT_DEBUG_LOG_LEVEL
 #define SL_DEBUG(LOG, FMT, ...) \
   _SL_LOG((LOG), soralog::Level::DEBUG, (FMT), ##__VA_ARGS__, Z)
-#else
-#define SL_DEBUG(LOG, FMT, ...)
-#endif
 
 #define SL_VERBOSE(LOG, FMT, ...) \
   _SL_LOG((LOG), soralog::Level::VERBOSE, (FMT), ##__VA_ARGS__, Z)
@@ -124,7 +100,7 @@ endif()
   _SL_LOG((LOG), soralog::Level::WARN, (FMT), ##__VA_ARGS__, Z)
 
 #define SL_ERROR(LOG, FMT, ...) \
-  _SL_LOG((LOG), soralog::Level::ERROR_, (FMT), ##__VA_ARGS__, Z)
+  _SL_LOG((LOG), soralog::Level::ERROR, (FMT), ##__VA_ARGS__, Z)
 
 #define SL_CRITICAL(LOG, FMT, ...) \
   _SL_LOG((LOG), soralog::Level::CRITICAL, (FMT), ##__VA_ARGS__, Z)

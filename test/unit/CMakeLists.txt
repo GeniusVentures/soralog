@@ -52,3 +52,10 @@ addtest(macros_test
 target_link_libraries(macros_test
     fmt::fmt
     )
+
+addtest(macros_test
+    macros_test.cpp
+    )
+target_link_libraries(macros_test
+    fmt::fmt
+    )
