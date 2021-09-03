@@ -16,12 +16,14 @@ namespace soralog {
     system.makeSink<SinkToConsole>("console", with_color_);
     system.makeGroup("*", {}, "console", level_);
 
-    return {.has_error = false,
-            .has_warning = true,
-            .message = std::string() +
+    Configurator::Result result;
+    result.has_error = false;
+    result.has_warning = true;
+    result.message = std::string() +
                 "I: Using fallback configurator for logger system\n"
                 "I: All logs will be write into " + (with_color_ ? "color " : "") +
-                "console with '" + levelToStr(level_) + "' level"};
+                "console with '" + levelToStr(level_) + "' level";
+    return result;
   }
 
 }  // namespace soralog

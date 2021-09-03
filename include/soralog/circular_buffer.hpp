@@ -127,7 +127,7 @@ namespace soralog {
         }
 
         // Go to next item place
-        if (not push_index_.compare_exchange_weak(push_index, next_index,
+        if (!push_index_.compare_exchange_weak(push_index, next_index,
                                                   std::memory_order_release)) {
           continue;
         }
@@ -154,13 +154,13 @@ namespace soralog {
         auto &node = data_[pop_index];
 
         // Item is already consumed
-        if (not node.ready.load(std::memory_order_acquire)) {
+        if (!node.ready.load(std::memory_order_acquire)) {
           continue;
         }
 
         // Go to next item
         auto next_index = (pop_index + 1) % data_.size();
-        if (not pop_index_.compare_exchange_weak(pop_index, next_index,
+        if (!pop_index_.compare_exchange_weak(pop_index, next_index,
                                                  std::memory_order_release)) {
           continue;
         }

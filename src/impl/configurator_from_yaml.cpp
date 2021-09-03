@@ -63,7 +63,7 @@ namespace soralog {
 
           if constexpr (std::is_same_v<T, std::filesystem::path>) {
             try {
-              node = YAML::LoadFile(arg);
+              node = YAML::LoadFile(arg.string());
             } catch (const std::exception &exception) {
               errors_ << "E: Can't parse file `"
                       << std::filesystem::canonical(arg).string()
@@ -85,20 +85,20 @@ namespace soralog {
         },
         config_);
 
-    if (not has_error_) {
+    if (!has_error_) {
       parse(node);
     }
 
     result.has_error = result.has_error || has_error_;
     result.has_warning = result.has_warning || has_warning_;
-    result.message += (has_error_ or has_warning_)
+    result.message += (has_error_ || has_warning_)
         ? ("I: Some problems are found in config:\n" + errors_.str())
         : "";
     return result;
   }
 
   void ConfiguratorFromYAML::Applicator::parse(const YAML::Node &node) {
-    if (not node.IsMap()) {
+    if (!node.IsMap()) {
       errors_ << "E: Config is not YAML map\n";
       has_error_ = true;
       return;
@@ -107,7 +107,7 @@ namespace soralog {
     auto sinks = node["sinks"];
 
     auto groups = node["groups"];
-    if (not groups.IsDefined()) {
+    if (!groups.IsDefined()) {
       errors_ << "E: Groups are undefined\n";
       has_error_ = true;
     }
@@ -138,7 +138,7 @@ namespace soralog {
       return;
     }
 
-    if (not sinks.IsSequence()) {
+    if (!sinks.IsSequence()) {
       errors_ << "E: Sinks is not a YAML sequence\n";
       has_error_ = true;
       return;
@@ -146,7 +146,7 @@ namespace soralog {
 
     for (auto i = 0; i < sinks.size(); ++i) {
       auto sink = sinks[i];
-      if (not sink.IsMap()) {
+      if (!sink.IsMap()) {
         errors_ << "W: Element #" << i << " of 'sinks' is not a YAML map\n";
         continue;
       }
@@ -159,10 +159,10 @@ namespace soralog {
     bool fail = false;
 
     auto name_node = sink["name"];
-    if (not name_node.IsDefined()) {
+    if (!name_node.IsDefined()) {
       errors_ << "E: Not found 'name' of sink node #" << number << "\n";
       fail = true;
-    } else if (not name_node.IsScalar()) {
+    } else if (!name_node.IsScalar()) {
       fail = true;
       errors_ << "E: Property 'name' of sink node #" << number
               << " is not scalar\n";
@@ -170,11 +170,11 @@ namespace soralog {
     }
 
     auto type_node = sink["type"];
-    if (not type_node.IsDefined()) {
+    if (!type_node.IsDefined()) {
       fail = true;
       errors_ << "E: Not found 'type' of sink node #" << number << "\n";
       has_error_ = true;
-    } else if (not type_node.IsScalar()) {
+    } else if (!type_node.IsScalar()) {
       fail = true;
       errors_ << "E: Property 'type' of sink node #" << number
               << "is not scalar\n";
@@ -216,7 +216,7 @@ namespace soralog {
 
     auto color_node = sink_node["color"];
     if (color_node.IsDefined()) {
-      if (not color_node.IsScalar()) {
+      if (!color_node.IsScalar()) {
         errors_ << "W: Property 'color' of sink node is not true or false\n";
         has_warning_ = true;
       } else {
@@ -226,7 +226,7 @@ namespace soralog {
 
     auto thread_node = sink_node["thread"];
     if (thread_node.IsDefined()) {
-      if (not thread_node.IsScalar()) {
+      if (!thread_node.IsScalar()) {
         errors_ << "W: Property 'thread' of sink node is not scalar\n";
         has_warning_ = true;
       } else {
@@ -245,7 +245,7 @@ namespace soralog {
 
     auto capacity_node = sink_node["capacity"];
     if (capacity_node.IsDefined()) {
-      if (not capacity_node.IsScalar()) {
+      if (!capacity_node.IsScalar()) {
         errors_ << "W: Property 'capacity' of sink node is not scalar\n";
         has_warning_ = true;
       } else {
@@ -262,7 +262,7 @@ namespace soralog {
 
     auto buffer_node = sink_node["buffer"];
     if (buffer_node.IsDefined()) {
-      if (not buffer_node.IsScalar()) {
+      if (!buffer_node.IsScalar()) {
         errors_ << "W: Property 'buffer' of sink node is not scalar\n";
         has_warning_ = true;
       } else {
@@ -279,13 +279,13 @@ namespace soralog {
 
     auto latency_node = sink_node["latency"];
     if (latency_node.IsDefined()) {
-      if (not latency_node.IsScalar()) {
+      if (!latency_node.IsScalar()) {
         errors_ << "W: Property 'latency' of sink node is not scalar\n";
         has_warning_ = true;
       } else {
         auto latency_int = latency_node.as<int>();
         if (std::to_string(latency_int) != latency_node.as<std::string>()
-            or latency_int < 0) {
+            || latency_int < 0) {
           errors_ << "W: Wrong value of property 'latency' value of sink '"
                   << name << "': " << latency_node.as<std::string>() << "\n";
           has_warning_ = true;
@@ -337,11 +337,11 @@ namespace soralog {
     std::optional<size_t> latency;
 
     auto path_node = sink_node["path"];
-    if (not path_node.IsDefined()) {
+    if (!path_node.IsDefined()) {
       fail = true;
       errors_ << "E: Not found 'path' of sink '" << name << "'\n";
       has_error_ = true;
-    } else if (not path_node.IsScalar()) {
+    } else if (!path_node.IsScalar()) {
       fail = true;
       errors_ << "E: Property 'path' of sink '" << name << "' is not scalar\n";
       has_error_ = true;
@@ -349,7 +349,7 @@ namespace soralog {
 
     auto thread_node = sink_node["thread"];
     if (thread_node.IsDefined()) {
-      if (not thread_node.IsScalar()) {
+      if (!thread_node.IsScalar()) {
         errors_ << "W: Property 'thread' of sink node is not scalar\n";
         has_warning_ = true;
       } else {
@@ -368,7 +368,7 @@ namespace soralog {
 
     auto capacity_node = sink_node["capacity"];
     if (capacity_node.IsDefined()) {
-      if (not capacity_node.IsScalar()) {
+      if (!capacity_node.IsScalar()) {
         errors_ << "W: Property 'capacity' of sink node is not scalar\n";
         has_warning_ = true;
       } else {
@@ -385,7 +385,7 @@ namespace soralog {
 
     auto buffer_node = sink_node["buffer"];
     if (buffer_node.IsDefined()) {
-      if (not buffer_node.IsScalar()) {
+      if (!buffer_node.IsScalar()) {
         errors_ << "W: Property 'buffer' of sink node is not scalar\n";
         has_warning_ = true;
       } else {
@@ -402,13 +402,13 @@ namespace soralog {
 
     auto latency_node = sink_node["latency"];
     if (latency_node.IsDefined()) {
-      if (not latency_node.IsScalar()) {
+      if (!latency_node.IsScalar()) {
         errors_ << "W: Property 'latency' of sink node is not scalar\n";
         has_warning_ = true;
       } else {
         auto latency_int = latency_node.as<int>();
         if (std::to_string(latency_int) != latency_node.as<std::string>()
-            or latency_int < 0) {
+            || latency_int < 0) {
           errors_ << "W: Wrong value of property 'latency' value of sink '"
                   << name << "': " << latency_node.as<std::string>() << "\n";
           has_warning_ = true;
@@ -463,7 +463,7 @@ namespace soralog {
       return;
     }
 
-    if (not groups.IsSequence()) {
+    if (!groups.IsSequence()) {
       errors_ << "E: Node 'groups' is not a sequence\n";
       has_error_ = true;
       return;
@@ -471,7 +471,7 @@ namespace soralog {
 
     for (auto i = 0; i < groups.size(); ++i) {
       auto group = groups[i];
-      if (not group.IsMap()) {
+      if (!group.IsMap()) {
         errors_ << "E: Element #" << i << " of 'groups' is not a map\n";
         has_error_ = true;
         continue;
@@ -489,11 +489,11 @@ namespace soralog {
 
     auto name_node = group_node["name"];
     std::string tmp_name = "node #" + std::to_string(number);
-    if (not name_node.IsDefined()) {
+    if (!name_node.IsDefined()) {
       fail = true;
       errors_ << "W: Not found 'name' of group " << tmp_name << "\n";
       has_error_ = true;
-    } else if (not name_node.IsScalar()) {
+    } else if (!name_node.IsScalar()) {
       fail = true;
       errors_ << "E: Property 'name' of group " << tmp_name
               << " is not scalar\n";
@@ -504,7 +504,7 @@ namespace soralog {
 
     auto fallback_node = group_node["is_fallback"];
     if (fallback_node.IsDefined()) {
-      if (not fallback_node.IsScalar()) {
+      if (!fallback_node.IsScalar()) {
         fail = true;
         errors_ << "E: Property 'is_fallback' of group " << tmp_name
                 << " is not scalar\n";
@@ -517,28 +517,28 @@ namespace soralog {
     std::optional<std::string> sink{};
     auto sink_node = group_node["sink"];
     if (sink_node.IsDefined()) {
-      if (not sink_node.IsScalar()) {
+      if (!sink_node.IsScalar()) {
         fail = true;
         errors_ << "E: Property 'sink' of group " << tmp_name
                 << " is not scalar\n";
         has_error_ = true;
       } else {
         sink.emplace(sink_node.as<std::string>());
-        if (not system_.getSink(sink.value())) {
+        if (!system_.getSink(sink.value())) {
           fail = true;
           errors_ << "E: Sink '" << *sink << "' of group " << tmp_name
                   << " is undefined\n";
           has_error_ = true;
         }
       }
-    } else if (not parent) {
+    } else if (!parent) {
       sink.emplace("*");
     }
 
     std::optional<std::string> level_string{};
     auto level_node = group_node["level"];
     if (level_node.IsDefined()) {
-      if (not level_node.IsScalar()) {
+      if (!level_node.IsScalar()) {
         fail = true;
         errors_ << "E: Property 'level' of group " << tmp_name
                 << " is not scalar\n";
@@ -546,7 +546,7 @@ namespace soralog {
       } else {
         level_string.emplace(level_node.as<std::string>());
       }
-    } else if (not parent) {
+    } else if (!parent) {
       fail = true;
       errors_ << "E: Not found 'level' of root group " << tmp_name << "\n";
       has_error_ = true;
@@ -554,7 +554,7 @@ namespace soralog {
 
     auto children_node = group_node["children"];
     if (children_node.IsDefined()) {
-      if (not children_node.IsNull() and not children_node.IsSequence()) {
+      if (!children_node.IsNull() && !children_node.IsSequence()) {
         fail = true;
         errors_ << "E: Property 'children' of group " << tmp_name
                 << " is not sequence\n";
@@ -581,7 +581,7 @@ namespace soralog {
     }
 
     if (sink) {
-      if (not system_.getSink(*sink)) {
+      if (!system_.getSink(*sink)) {
         errors_ << "E: Unknown sink in group " << tmp_name << ": " << *sink
                 << "\n";
         has_error_ = true;
@@ -659,7 +659,7 @@ namespace soralog {
       system_.setFallbackGroup(name);
     }
 
-    if (children_node.IsDefined() and children_node.IsSequence()) {
+    if (children_node.IsDefined() && children_node.IsSequence()) {
       parseGroups(children_node, name);
     }
   }

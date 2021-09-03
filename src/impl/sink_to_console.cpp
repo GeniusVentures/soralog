@@ -122,7 +122,7 @@ namespace soralog {
       if (width == 0)
         return;
       for (auto c : name) {
-        if (c == '\0' or width == 0)
+        if (c == '\0' || width == 0)
           break;
         *ptr++ = c;  // NOLINT
         --width;
@@ -170,7 +170,7 @@ namespace soralog {
 
   void SinkToConsole::flush() noexcept {
     bool false_v = false;
-    if (not flush_in_progress_.compare_exchange_strong(
+    if (!flush_in_progress_.compare_exchange_strong(
             false_v, true, std::memory_order_acq_rel)) {
       return;
     }
@@ -282,8 +282,8 @@ namespace soralog {
         size_ -= event.message().size();
       }
 
-      if ((end - ptr) < sizeof(Event) or not node
-          or std::chrono::steady_clock::now()
+      if ((end - ptr) < sizeof(Event) || !node
+          || std::chrono::steady_clock::now()
               >= next_flush_.load(std::memory_order_acquire)) {
         next_flush_.store(std::chrono::steady_clock::now() + latency_,
                           std::memory_order_release);
@@ -291,7 +291,7 @@ namespace soralog {
         ptr = begin;
       }
 
-      if (not node) {
+      if (!node) {
         bool true_v = true;
         if (need_to_flush_.compare_exchange_weak(true_v, false,
                                                  std::memory_order_acq_rel)) {
@@ -316,8 +316,8 @@ namespace soralog {
         if (condvar_.wait_until(lock,
                                 next_flush_.load(std::memory_order_relaxed))
             == std::cv_status::no_timeout) {
-          if (not need_to_flush_.load(std::memory_order_relaxed)
-              and not need_to_finalize_.load(std::memory_order_relaxed)) {
+          if (!need_to_flush_.load(std::memory_order_relaxed)
+              && !need_to_finalize_.load(std::memory_order_relaxed)) {
             continue;
           }
         }

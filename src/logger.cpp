@@ -81,10 +81,10 @@ namespace soralog {
   void Logger::setGroup(std::shared_ptr<const Group> group) {
     assert(group);
     group_ = std::move(group);
-    if (not is_sink_overridden_) {
+    if (!is_sink_overridden_) {
       setSinkFromGroup(group_);
     }
-    if (not is_level_overridden_) {
+    if (!is_level_overridden_) {
       setLevelFromGroup(group_);
     }
   }

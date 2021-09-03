@@ -102,7 +102,7 @@ int main() {
   soralog::LoggingSystem log_system(configurator);
 
   auto r = log_system.configure();
-  if (not r.message.empty()) {
+  if (!r.message.empty()) {
     (r.has_error ? std::cerr : std::cout) << r.message << std::endl;
   }
   if (r.has_error) {
@@ -125,11 +125,11 @@ int main() {
 
   main_log->setLevel(soralog::Level::TRACE);
   main_log->debug("{}", lambda("logger: debug msg for trace level"));
-  SL_DEBUG(main_log, "{}", lambda("macro: debug msg for trace level"));
+  //SL_DEBUG(main_log, "{}", lambda("macro: debug msg for trace level"));
 
   main_log->setLevel(soralog::Level::INFO);
   main_log->debug("{}", lambda("logger: debug msg for info level"));
-  SL_DEBUG(main_log, "{}", lambda("macro: debug msg for info level"));
+  //SL_DEBUG(main_log, "{}", lambda("macro: debug msg for info level"));
 
   std::vector<std::shared_ptr<std::thread>> threads;
 
