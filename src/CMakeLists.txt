@@ -33,7 +33,7 @@ add_library(sink_to_console
     )
 target_link_libraries(sink_to_console
     sink
-    pthread
+    #pthread
     )
 
 add_library(sink_to_file
@@ -41,7 +41,7 @@ add_library(sink_to_file
     )
 target_link_libraries(sink_to_file
     sink
-    pthread
+    #pthread
     )
 
 add_library(group
