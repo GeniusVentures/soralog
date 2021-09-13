@@ -71,9 +71,17 @@ namespace soralog::macro {
 
 #define _SL_WRAP_ARGS(...) , ##__VA_ARGS__
 
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+// Optional arguments are switched off to fix Windows build
+// @todo Apply a suitable fix instead of disabling
+#define _SL_LOG(LOG, LVL, FMT, ...)   \
+  soralog::macro::proxy((LOG), (LVL), \
+                        (FMT)/*_SL_WRAP(Z _SL_WRAP_ARGS(__VA_ARGS__))*/)
+#else
 #define _SL_LOG(LOG, LVL, FMT, ...)   \
   soralog::macro::proxy((LOG), (LVL), \
                         (FMT)_SL_WRAP(Z _SL_WRAP_ARGS(__VA_ARGS__)))
+#endif
 
 #define SL_LOG(LOG, LVL, FMT, ...) \
   _SL_LOG((LOG), (LVL), (FMT), ##__VA_ARGS__, Z)
