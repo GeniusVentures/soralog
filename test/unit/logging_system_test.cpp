@@ -965,7 +965,7 @@ TEST_F(LoggingSystemTest, ChangeLevelOfLogger) {
 
   /// @When change level of loggers
   system_->setLevelOfLogger("Log1", Level::WARN);
-  system_->setLevelOfLogger("Log2", Level::ERROR);
+  system_->setLevelOfLogger("Log2", Level::ERROR_);
 
   /// @Then is have next state of groups
   //  Logger:  L1    L2
@@ -975,7 +975,7 @@ TEST_F(LoggingSystemTest, ChangeLevelOfLogger) {
 
   EXPECT_TRUE(log1->level() == Level::WARN);  // *own
   EXPECT_TRUE(log1->isLevelOverridden());
-  EXPECT_TRUE(log2->level() == Level::ERROR);  // *own
+  EXPECT_TRUE(log2->level() == Level::ERROR_);  // *own
   EXPECT_TRUE(log2->isLevelOverridden());
 
   /// @When change level of loggers

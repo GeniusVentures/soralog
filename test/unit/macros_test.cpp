@@ -65,7 +65,7 @@ TEST_F(MacrosTest, NoArg) {
 
   fmt = "Error: no arg";
   SL_ERROR(logger(), fmt);
-  EXPECT_TRUE(logger_->last_level == Level::ERROR);
+  EXPECT_TRUE(logger_->last_level == Level::ERROR_);
   EXPECT_TRUE(logger_->last_message == fmt);
 
   fmt = "Critical: no arg";
@@ -102,7 +102,7 @@ TEST_F(MacrosTest, OneArg) {
 
   fmt = "Error: one arg: {}";
   SL_ERROR(logger(), fmt, "string");
-  EXPECT_TRUE(logger_->last_level == Level::ERROR);
+  EXPECT_TRUE(logger_->last_level == Level::ERROR_);
   EXPECT_TRUE(logger_->last_message == "Error: one arg: string");
 
   fmt = "Critical: one arg: {}";
@@ -139,7 +139,7 @@ TEST_F(MacrosTest, TwoArg) {
 
   fmt = "Error: two args: {} and {}";
   SL_ERROR(logger(), fmt, 1, 2.3);
-  EXPECT_TRUE(logger_->last_level == Level::ERROR);
+  EXPECT_TRUE(logger_->last_level == Level::ERROR_);
   EXPECT_TRUE(logger_->last_message == "Error: two args: 1 and 2.3");
 
   fmt = "Critical: two args: {} and {}";
@@ -177,7 +177,7 @@ TEST_F(MacrosTest, TwentyArg) {
 
   fmt = "Error: twenty args: {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}";
   SL_ERROR(logger(), fmt, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20);
-  EXPECT_TRUE(logger_->last_level == Level::ERROR);
+  EXPECT_TRUE(logger_->last_level == Level::ERROR_);
   EXPECT_TRUE(logger_->last_message == "Error: twenty args: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20");
 
   fmt = "Critical: twenty args: {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}";
@@ -215,8 +215,8 @@ TEST_F(MacrosTest, CustomLevel) {
   EXPECT_TRUE(logger_->last_level == Level::WARN);
   EXPECT_TRUE(logger_->last_message == "Custom: warning");
 
-  SL_LOG(logger(), calculatedLevel(Level::ERROR), fmt, "error");
-  EXPECT_TRUE(logger_->last_level == Level::ERROR);
+  SL_LOG(logger(), calculatedLevel(Level::ERROR_), fmt, "error");
+  EXPECT_TRUE(logger_->last_level == Level::ERROR_);
   EXPECT_TRUE(logger_->last_message == "Custom: error");
 
   // clang-format off
