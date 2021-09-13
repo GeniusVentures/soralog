@@ -595,7 +595,7 @@ namespace soralog {
       } else if (level_string == "critical" || level_string == "crit") {
         level.emplace(Level::CRITICAL);
       } else if (level_string == "error") {
-        level.emplace(Level::ERROR);
+        level.emplace(Level::ERROR_);
       } else if (level_string == "warning" || level_string == "warn") {
         level.emplace(Level::WARN);
       } else if (level_string == "info") {
