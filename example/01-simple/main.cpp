@@ -124,12 +124,10 @@ int main() {
   };
 
   main_log->setLevel(soralog::Level::TRACE);
-  main_log->debug("{}", lambda("logger: debug msg for trace level"));
-  //SL_DEBUG(main_log, "{}", lambda("macro: debug msg for trace level"));
+  SL_DEBUG(main_log, "{}", lambda("macro: debug msg for trace level"));
 
   main_log->setLevel(soralog::Level::INFO);
-  main_log->debug("{}", lambda("logger: debug msg for info level"));
-  //SL_DEBUG(main_log, "{}", lambda("macro: debug msg for info level"));
+  SL_DEBUG(main_log, "{}", lambda("macro: debug msg for info level"));
 
   std::vector<std::shared_ptr<std::thread>> threads;
 
