@@ -12,6 +12,7 @@ endif()
 hunter_add_package(yaml-cpp)
 find_package(yaml-cpp CONFIG REQUIRED)
 if (NOT TARGET yaml-cpp::yaml-cpp)
+    set_target_properties(yaml-cpp PROPERTIES IMPORTED_GLOBAL TRUE)
     add_library(yaml-cpp::yaml-cpp ALIAS yaml-cpp)
 endif()
 
