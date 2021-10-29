@@ -11,17 +11,12 @@ if(XCODE_VERSION)
     fatal_error(${_err})
 endif()
 
+# don't override if tool chain set where to find these
+if(NOT DEFINED CMAKE_C_COMPILER)
 find_program(CMAKE_C_COMPILER clang clang-9 clang-8)
-find_program(CMAKE_CXX_COMPILER clang++ clang++-9 clang++-9)
-
 if(NOT CMAKE_C_COMPILER)
     fatal_error("clang not found")
 endif()
-
-if(NOT CMAKE_CXX_COMPILER)
-    fatal_error("clang++ not found")
-endif()
-
 set(
     CMAKE_C_COMPILER
     "${CMAKE_C_COMPILER}"
@@ -31,6 +26,17 @@ set(
     FORCE
 )
 
+endif(NOT DEFINED CMAKE_C_COMPILER)
+
+if(NOT DEFINED CMAKE_CXX_COMPILER)
+find_program(CMAKE_CXX_COMPILER clang++ clang++-9 clang++-9)
+
+if(NOT CMAKE_CXX_COMPILER)
+    fatal_error("clang++ not found")
+endif()
+
+message("CXX_COMPILER: "  "${CMAKE_CXX_COMPILER}") 
+
 set(
     CMAKE_CXX_COMPILER
     "${CMAKE_CXX_COMPILER}"
@@ -39,3 +45,8 @@ set(
     "C++ compiler"
     FORCE
 )
+
+endif(NOT DEFINED CMAKE_CXX_COMPILER)
+
+
+
