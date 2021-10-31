@@ -4,14 +4,7 @@ else()
     set(POLLY_COMPILER_CLANG_CMAKE 1)
 endif()
 
-if(XCODE_VERSION)
-    set(_err "This toolchain is not available for Xcode")
-    set(_err "${_err} because Xcode ignores CMAKE_C(XX)_COMPILER variable.")
-    set(_err "${_err} Use xcode.cmake toolchain instead.")
-    fatal_error(${_err})
-endif()
-
-# don't override if tool chain set where to find these
+# don't override if tool chain set externally, i.e. xcode, IOS, Android where to find these
 if(NOT DEFINED CMAKE_C_COMPILER)
 find_program(CMAKE_C_COMPILER clang clang-9 clang-8)
 if(NOT CMAKE_C_COMPILER)
