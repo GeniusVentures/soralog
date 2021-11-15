@@ -123,6 +123,8 @@ int main() {
     return tag;
   };
 
+  SL_DEBUG(main_log, "No optional params");
+
   main_log->setLevel(soralog::Level::TRACE);
   SL_DEBUG(main_log, "{}", lambda("macro: debug msg for trace level"));
 
