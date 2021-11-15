@@ -89,49 +89,46 @@ namespace soralog::macro {
                                 _11, _12, _13, _14, x, ...)                  \
   x
 
-// MSVC doesn't expand VA_ARGS correctly
-// The issues is discussed here https://stackoverflow.com/questions/5134523/msvc-doesnt-expand-va-args-correctly
-#define _SL_WRAP_EXPAND(T) T
 #define _SL_WRAP_0(Z, x, ...)
 #define _SL_WRAP_1(Z, x, ...) , [&] { return (x); }
-#define _SL_WRAP_2(Z, x, ...) \
-  , [&] { return (x); } _SL_WRAP_1(Z, _SL_WRAP_EXPAND(__VA_ARGS__))
-#define _SL_WRAP_3(Z, x, ...) \
-  , [&] { return (x); } _SL_WRAP_2(Z, _SL_WRAP_EXPAND(__VA_ARGS__))
-#define _SL_WRAP_4(Z, x, ...) \
-  , [&] { return (x); } _SL_WRAP_3(Z, _SL_WRAP_EXPAND(__VA_ARGS__))
-#define _SL_WRAP_5(Z, x, ...) \
-  , [&] { return (x); } _SL_WRAP_4(Z, _SL_WRAP_EXPAND(__VA_ARGS__))
-#define _SL_WRAP_6(Z, x, ...) \
-  , [&] { return (x); } _SL_WRAP_5(Z, _SL_WRAP_EXPAND(__VA_ARGS__))
-#define _SL_WRAP_7(Z, x, ...) \
-  , [&] { return (x); } _SL_WRAP_6(Z, _SL_WRAP_EXPAND(__VA_ARGS__))
-#define _SL_WRAP_8(Z, x, ...) \
-  , [&] { return (x); } _SL_WRAP_7(Z, _SL_WRAP_EXPAND(__VA_ARGS__))
-#define _SL_WRAP_9(Z, x, ...) \
-  , [&] { return (x); } _SL_WRAP_8(Z, _SL_WRAP_EXPAND(__VA_ARGS__))
-#define _SL_WRAP_10(Z, x, ...) \
-  , [&] { return (x); } _SL_WRAP_9(Z, _SL_WRAP_EXPAND(__VA_ARGS__))
-#define _SL_WRAP_11(Z, x, ...) \
-  , [&] { return (x); } _SL_WRAP_10(Z, _SL_WRAP_EXPAND(__VA_ARGS__))
-#define _SL_WRAP_12(Z, x, ...) \
-  , [&] { return (x); } _SL_WRAP_11(Z, _SL_WRAP_EXPAND(__VA_ARGS__))
-#define _SL_WRAP_13(Z, x, ...) \
-  , [&] { return (x); } _SL_WRAP_12(Z, _SL_WRAP_EXPAND(__VA_ARGS__))
-#define _SL_WRAP_14(Z, x, ...) \
-  , [&] { return (x); } _SL_WRAP_13(Z, _SL_WRAP_EXPAND(__VA_ARGS__))
-#define _SL_WRAP_15(Z, x, ...) \
-  , [&] { return (x); } _SL_WRAP_14(Z, _SL_WRAP_EXPAND(__VA_ARGS__))
-#define _SL_WRAP_16(Z, x, ...) \
-  , [&] { return (x); } _SL_WRAP_15(Z, _SL_WRAP_EXPAND(__VA_ARGS__))
-#define _SL_WRAP_17(Z, x, ...) \
-  , [&] { return (x); } _SL_WRAP_16(Z, _SL_WRAP_EXPAND(__VA_ARGS__))
-#define _SL_WRAP_18(Z, x, ...) \
-  , [&] { return (x); } _SL_WRAP_17(Z, _SL_WRAP_EXPAND(__VA_ARGS__))
-#define _SL_WRAP_19(Z, x, ...) \
-  , [&] { return (x); } _SL_WRAP_18(Z, _SL_WRAP_EXPAND(__VA_ARGS__))
-#define _SL_WRAP_20(Z, x, ...) \
-  , [&] { return (x); } _SL_WRAP_19(Z, _SL_WRAP_EXPAND(__VA_ARGS__))
+#define _SL_WRAP_2(Z, x, _1, ...) \
+  , [&] { return (x); } _SL_WRAP_1(Z, _1, Z)
+#define _SL_WRAP_3(Z, x, _1, _2, ...) \
+  , [&] { return (x); } _SL_WRAP_2(Z, _1, _2, Z)
+#define _SL_WRAP_4(Z, x, _1, _2, _3, ...) \
+  , [&] { return (x); } _SL_WRAP_3(Z, _1, _2, _3, Z)
+#define _SL_WRAP_5(Z, x, _1, _2, _3, _4, ...) \
+  , [&] { return (x); } _SL_WRAP_4(Z, _1, _2, _3, _4, Z)
+#define _SL_WRAP_6(Z, x, _1, _2, _3, _4, _5, ...) \
+  , [&] { return (x); } _SL_WRAP_5(Z, _1, _2, _3, _4, _5, Z)
+#define _SL_WRAP_7(Z, x, _1, _2, _3, _4, _5, _6, ...) \
+  , [&] { return (x); } _SL_WRAP_6(Z, _1, _2, _3, _4, _5, _6, Z)
+#define _SL_WRAP_8(Z, x, _1, _2, _3, _4, _5, _6, _7, ...) \
+  , [&] { return (x); } _SL_WRAP_7(Z, _1, _2, _3, _4, _5, _6, _7, Z)
+#define _SL_WRAP_9(Z, x, _1, _2, _3, _4, _5, _6, _7, _8, ...) \
+  , [&] { return (x); } _SL_WRAP_8(Z, _1, _2, _3, _4, _5, _6, _7, _8, Z)
+#define _SL_WRAP_10(Z, x, _1, _2, _3, _4, _5, _6, _7, _8, _9, ...) \
+  , [&] { return (x); } _SL_WRAP_9(Z, _1, _2, _3, _4, _5, _6, _7, _8, _9, Z)
+#define _SL_WRAP_11(Z, x, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, ...) \
+  , [&] { return (x); } _SL_WRAP_10(Z, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, Z)
+#define _SL_WRAP_12(Z, x, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, ...) \
+  , [&] { return (x); } _SL_WRAP_11(Z, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, Z)
+#define _SL_WRAP_13(Z, x, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, ...) \
+  , [&] { return (x); } _SL_WRAP_12(Z, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, Z)
+#define _SL_WRAP_14(Z, x, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, ...) \
+  , [&] { return (x); } _SL_WRAP_13(Z, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, Z)
+#define _SL_WRAP_15(Z, x, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, ...) \
+  , [&] { return (x); } _SL_WRAP_14(Z, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, Z)
+#define _SL_WRAP_16(Z, x, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, ...) \
+  , [&] { return (x); } _SL_WRAP_15(Z, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, Z)
+#define _SL_WRAP_17(Z, x, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, ...) \
+  , [&] { return (x); } _SL_WRAP_16(Z, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, Z)
+#define _SL_WRAP_18(Z, x, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, ...) \
+  , [&] { return (x); } _SL_WRAP_17(Z, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, Z)
+#define _SL_WRAP_19(Z, x, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, ...) \
+  , [&] { return (x); } _SL_WRAP_18(Z, _1, _2, _3, _4, _5, _6, _7, _8, _9,  _10, _11, _12, _13, _14, _15, _16, _17, _18, Z)
+#define _SL_WRAP_20(Z, x, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, ...) \
+  , [&] { return (x); } _SL_WRAP_19(Z, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19 Z)
 
 #define _SL_WRAP_NARG(...) _SL_WRAP_NARG_(__VA_ARGS__, _SL_WRAP_RSEQ_N())
 // It seems to be that _SL_WRAP_ARG_N cannot be resolved on Windows without an additional wrapper
