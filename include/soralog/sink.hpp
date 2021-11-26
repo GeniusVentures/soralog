@@ -46,9 +46,9 @@ namespace soralog {
          size_t max_buffer_size, size_t latency)
         : name_(std::move(name)),
           thread_info_type_(thread_info_type),
-          events_(max_events),
           max_buffer_size_(max_buffer_size),
-          latency_(latency) {
+          latency_(latency),
+          events_(max_events) {
       // Auto-fix buffer size
       if (max_buffer_size_ < sizeof(Event) * 2) {
         const_cast<size_t &>(max_buffer_size_) = sizeof(Event) * 2;  // NOLINT
