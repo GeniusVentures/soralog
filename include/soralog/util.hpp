@@ -36,7 +36,7 @@ namespace soralog::util {
   inline void getThreadName(std::array<char, 16> &name) {
     static thread_local std::array<char, 16> thr_name{};
     static thread_local bool initialized = [&] {
-#if defined(__linux__) || defined(__APPLE__)
+#if (defined(__linux__) && !defined(__ANDROID__)) || defined(__APPLE__)
       pthread_getname_np(pthread_self(), thr_name.data(), thr_name.size());
 #else
 //#warning \
