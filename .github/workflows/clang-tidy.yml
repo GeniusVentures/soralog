@@ -49,4 +49,4 @@ jobs:
         export LLVM_ROOT=$(ls -r -d -1 ${LLVM_DIR} | head -1)
         export PATH=${LLVM_ROOT}/bin:${LLVM_ROOT}/share/clang:${PATH}
         cmake . -Bbuild -DBUILD_TESTS=ON
-        .github/aux/clang-tidy.sh build
+        .github/tools/clang-tidy.sh build
