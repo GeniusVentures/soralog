@@ -139,7 +139,7 @@ namespace soralog {
         }
 
         // Tail is caught up - queue is full
-        if (pop_index_ == push_index_ and size_ != 0) {
+        if (pop_index_ == push_index_ && size_ != 0) {
           busy_.clear();
           return {};
         }
@@ -177,7 +177,7 @@ namespace soralog {
         }
 
         // Head is caught up - queue is empty
-        if (push_index_ == pop_index_ and size_ == 0) {
+        if (push_index_ == pop_index_ && size_ == 0) {
           busy_.clear();
           return {};
         }

@@ -27,19 +27,19 @@ namespace soralog::util {
 #elif defined(__APPLE__)
     pthread_setname_np(buff.data());
 #else
-#warning \
-    "Function setThreadName() is not implemented for current platform; An auto-generated name will be used instead"
+#pragma message( \
+    "Function setThreadName() is not implemented for current platform; An auto-generated name will be used instead")
 #endif
   }
 
   inline void getThreadName(std::array<char, 16> &name) {
     static thread_local std::array<char, 16> thr_name{};
     static thread_local bool initialized = [&] {
-#if defined(__linux__) or defined(__APPLE__)
+#if defined(__linux__) || defined(__APPLE__)
       pthread_getname_np(pthread_self(), thr_name.data(), thr_name.size());
 #else
-#warning \
-    "Function getThreadName() is not implemented for current platform; An auto-generated name will be used instead"
+#pragma message( \
+    "Function getThreadName() is not implemented for current platform; An auto-generated name will be used instead")
       auto generated = "Thread#" + std::to_string(getThreadNumber());
       memcpy(thr_name.data(),
              generated.data(),

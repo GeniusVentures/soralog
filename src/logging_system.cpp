@@ -103,7 +103,7 @@ namespace soralog {
       const std::optional<Level> &level) {
     std::lock_guard guard(mutex_);
 
-    if (not is_configured_) {
+    if (!is_configured_) {
       throw std::logic_error("LoggerSystem is not yet configured");
     }
 
@@ -197,7 +197,7 @@ namespace soralog {
       if (current->isLevelOverridden() && current->isSinkOverridden()) {
         return -1;
       }
-      if (not current->parent()) {
+      if (!current->parent()) {
         return -1;
       }
       auto n = fn(current->parent());
@@ -265,7 +265,7 @@ namespace soralog {
       if (current->isSinkOverridden()) {
         return -1;
       }
-      if (not current->parent()) {
+      if (!current->parent()) {
         return -1;
       }
       auto n = fn(current->parent());
@@ -294,7 +294,7 @@ namespace soralog {
 
     for (auto it = loggers_.begin(); it != loggers_.end();) {
       if (auto logger = it->second.lock()) {
-        if (not logger->isSinkOverridden()) {
+        if (!logger->isSinkOverridden()) {
           if (auto it2 = passed_groups.find(logger->group());
               it2 != passed_groups.end()) {
             if (it2->second != -1) {
@@ -334,7 +334,7 @@ namespace soralog {
       if (current->isLevelOverridden()) {
         return -1;
       }
-      if (not current->parent()) {
+      if (!current->parent()) {
         return -1;
       }
       auto n = fn(current->parent());
@@ -363,7 +363,7 @@ namespace soralog {
 
     for (auto it = loggers_.begin(); it != loggers_.end();) {
       if (auto logger = it->second.lock()) {
-        if (not logger->isLevelOverridden()) {
+        if (!logger->isLevelOverridden()) {
           if (auto it2 = passed_groups.find(logger->group());
               it2 != passed_groups.end()) {
             if (it2->second != -1) {
@@ -447,7 +447,7 @@ namespace soralog {
                                      const std::string &sink_name) {
     std::lock_guard guard(mutex_);
     auto sink = getSink(sink_name);
-    if (not sink) {
+    if (!sink) {
       return false;
     }
     if (auto it = groups_.find(group_name); it != groups_.end()) {

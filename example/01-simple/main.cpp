@@ -108,7 +108,7 @@ int main() {
   soralog::LoggingSystem log_system(configurator);
 
   auto r = log_system.configure();
-  if (not r.message.empty()) {
+  if (!r.message.empty()) {
     (r.has_error ? std::cerr : std::cout) << r.message << '\n';
   }
   if (r.has_error) {

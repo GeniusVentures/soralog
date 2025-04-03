@@ -57,7 +57,7 @@ namespace soralog {
         return;
       }
       for (auto c : name) {
-        if (c == '\0' or width == 0) {
+        if (c == '\0' || width == 0) {
           break;
         }
         *ptr++ = c;  // NOLINT
@@ -88,7 +88,7 @@ namespace soralog {
         path_(std::move(path)),
         buff_(max_buffer_size_) {
     out_.open(path_, std::ios::app);
-    if (not out_.is_open()) {
+    if (!out_.is_open()) {
       std::cerr << "Can't open log file '" << path_ << "': " << strerror(errno)
                 << '\n';
     } else if (latency_ != std::chrono::milliseconds::zero()) {
@@ -100,7 +100,7 @@ namespace soralog {
     if (latency_ != std::chrono::milliseconds::zero()) {
       need_to_finalize_.store(true, std::memory_order_release);
       async_flush();
-      if (sink_worker_ and sink_worker_->joinable()) {
+      if (sink_worker_ && sink_worker_->joinable()) {
         sink_worker_->join();
         sink_worker_.reset();
       }
@@ -201,8 +201,8 @@ namespace soralog {
         appended = true;
       }
 
-      if ((end - ptr) < sizeof(Event) or appended
-          or std::chrono::steady_clock::now()
+      if ((end - ptr) < sizeof(Event) || appended
+          || std::chrono::steady_clock::now()
                  >= next_flush_.load(std::memory_order_acquire)) {
         next_flush_.store(std::chrono::steady_clock::now() + latency_,
                           std::memory_order_release);
@@ -226,7 +226,7 @@ namespace soralog {
             true_v, false, std::memory_order_acq_rel)) {
       std::ofstream out;
       out.open(path_, std::ios::app);
-      if (not out.is_open()) {
+      if (!out.is_open()) {
         if (out_.is_open()) {
           std::cerr << "Can't re-open log file '" << path_
                     << "': " << strerror(errno) << '\n';
@@ -260,8 +260,8 @@ namespace soralog {
         if (condvar_.wait_until(lock,
                                 next_flush_.load(std::memory_order_relaxed))
             == std::cv_status::no_timeout) {
-          if (not need_to_flush_.load(std::memory_order_relaxed)
-              and not need_to_finalize_.load(std::memory_order_relaxed)) {
+          if (!need_to_flush_.load(std::memory_order_relaxed)
+              && !need_to_finalize_.load(std::memory_order_relaxed)) {
             continue;
           }
         }

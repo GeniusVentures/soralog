@@ -56,7 +56,7 @@ namespace soralog {
         return;
       }
       for (auto c : name) {
-        if (c == '\0' or width == 0) {
+        if (c == '\0' || width == 0) {
           break;
         }
         *ptr++ = c;  // NOLINT
@@ -90,7 +90,7 @@ namespace soralog {
         ident_(std::move(ident)),
         buff_(max_buffer_size_) {
     bool false_v = false;
-    if (not syslog_is_opened_.compare_exchange_strong(
+    if (!syslog_is_opened_.compare_exchange_strong(
             false_v, true, std::memory_order_acq_rel)) {
       throw std::runtime_error(
           "SinkToSyslog has not created: Syslog already opened");
@@ -106,7 +106,7 @@ namespace soralog {
     if (latency_ != std::chrono::milliseconds::zero()) {
       need_to_finalize_.store(true, std::memory_order_release);
       async_flush();
-      if (sink_worker_ and sink_worker_->joinable()) {
+      if (sink_worker_ && sink_worker_->joinable()) {
         sink_worker_->join();
         sink_worker_.reset();
       }
@@ -244,7 +244,7 @@ namespace soralog {
         size_ -= event.message().size();
       }
 
-      if (not node) {
+      if (!node) {
         need_to_flush_.store(false, std::memory_order_release);
         break;
       }
@@ -265,8 +265,8 @@ namespace soralog {
         if (condvar_.wait_until(lock,
                                 next_flush_.load(std::memory_order_relaxed))
             == std::cv_status::no_timeout) {
-          if (not need_to_flush_.load(std::memory_order_relaxed)
-              and not need_to_finalize_.load(std::memory_order_relaxed)) {
+          if (!need_to_flush_.load(std::memory_order_relaxed)
+              && !need_to_finalize_.load(std::memory_order_relaxed)) {
             continue;
           }
         }
