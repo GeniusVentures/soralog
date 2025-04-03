@@ -50,8 +50,6 @@ if(BUILD_TESTS)
     endif()
 endif()
 
-cmake_policy(SET CMP0048 NEW)
-
 project(soralog VERSION 0.2.5 LANGUAGES CXX)
 
 find_program(CCACHE_FOUND ccache)
@@ -61,8 +59,6 @@ if (CCACHE_FOUND)
 endif (CCACHE_FOUND)
 
 include(cmake/functions.cmake)
-
-include(cmake/toolchain/compiler.cmake)
 
 if (NOT DEFINED CMAKE_TOOLCHAIN_FILE OR NOT DEFINED CMAKE_CXX_STANDARD)
     if (MAX_SUPPORTED_CXX_STANDARD GREATER_EQUAL 20)
