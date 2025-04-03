@@ -95,6 +95,7 @@ namespace soralog {
             return sizeof(Node) + padding;
           }()),
           raw_data_(capacity_ * element_size_) {
+      busy_.clear();
       for (auto index = 0; index < capacity; ++index) {
         // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
         new (raw_data_.data() + element_size_ * index) Node;
@@ -102,7 +103,9 @@ namespace soralog {
     };
 
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init,hicpp-member-init)
-    explicit CircularBuffer(size_t capacity) : CircularBuffer(capacity, 0) {};
+    explicit CircularBuffer(size_t capacity) : CircularBuffer(capacity, 0) {
+      busy_.clear();
+    };
 
     size_t capacity() const noexcept {
       while (busy_.test_and_set()) {
@@ -212,7 +215,7 @@ namespace soralog {
     std::atomic_size_t size_ = 0;
     std::atomic_size_t push_index_ = 0;
     std::atomic_size_t pop_index_ = 0;
-    mutable std::atomic_flag busy_ = false;
+    mutable std::atomic_flag busy_;
   };
 
 }  // namespace soralog

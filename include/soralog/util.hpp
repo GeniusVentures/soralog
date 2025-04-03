@@ -7,7 +7,9 @@
 
 #pragma once
 
+#if __has_include(<pthread.h>)
 #include <pthread.h>
+#endif
 #include <array>
 #include <string>
 
