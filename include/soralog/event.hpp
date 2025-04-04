@@ -104,7 +104,7 @@ namespace soralog {
                                          format)
                             .size;
         name = "Soralog";
-        level_ = Level::ERROR;
+        level_ = Level::ERROR_;
       }
 
       message_size_ = std::min(max_message_length, message_size_);

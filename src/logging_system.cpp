@@ -9,7 +9,6 @@
 
 #include <cassert>
 #include <functional>
-#include <ranges>
 #include <set>
 
 #include <soralog/group.hpp>

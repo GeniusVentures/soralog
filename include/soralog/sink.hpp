@@ -34,6 +34,8 @@
 #else
 #define LIKELY_IF(x) if (x)
 #endif
+#else
+#define LIKELY_IF(x) if (x)
 #endif
 
 namespace soralog {

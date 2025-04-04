@@ -157,7 +157,7 @@ namespace soralog {
      */
     template <typename... Args>
     void error(std::string_view format, const Args &...args) {
-      push(Level::ERROR, format, args...);
+      push(Level::ERROR_, format, args...);
     }
 
     /**
@@ -165,7 +165,7 @@ namespace soralog {
      */
     template <typename Arg>
     void error(const Arg &arg) {
-      push(Level::ERROR, "{}", arg);
+      push(Level::ERROR_, "{}", arg);
     }
 
     /**

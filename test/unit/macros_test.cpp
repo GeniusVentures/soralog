@@ -72,7 +72,7 @@ TEST_F(MacrosTest, NoArg) {
   EXPECT_TRUE(logger_->last_message == "Warning: no arg");
 
   SL_ERROR(logger(), "Error: no arg");
-  EXPECT_TRUE(logger_->last_level == Level::ERROR);
+  EXPECT_TRUE(logger_->last_level == Level::ERROR_);
   EXPECT_TRUE(logger_->last_message == "Error: no arg");
 
   SL_CRITICAL(logger(), "Critical: no arg");
@@ -102,7 +102,7 @@ TEST_F(MacrosTest, OneArg) {
   EXPECT_TRUE(logger_->last_message == "Warning: one arg: string");
 
   SL_ERROR(logger(), "Error: one arg: {}", "string");
-  EXPECT_TRUE(logger_->last_level == Level::ERROR);
+  EXPECT_TRUE(logger_->last_level == Level::ERROR_);
   EXPECT_TRUE(logger_->last_message == "Error: one arg: string");
 
   SL_CRITICAL(logger(), "Critical: one arg: {}", "string");
@@ -132,7 +132,7 @@ TEST_F(MacrosTest, TwoArg) {
   EXPECT_TRUE(logger_->last_message == "Warning: two args: 1 and 2.3");
 
   SL_ERROR(logger(), "Error: two args: {} and {}", 1, 2.3);
-  EXPECT_TRUE(logger_->last_level == Level::ERROR);
+  EXPECT_TRUE(logger_->last_level == Level::ERROR_);
   EXPECT_TRUE(logger_->last_message == "Error: two args: 1 and 2.3");
 
   SL_CRITICAL(logger(), "Critical: two args: {} and {}", 1, 2.3);
@@ -169,7 +169,7 @@ TEST_F(MacrosTest, TwentyArg) {
 
   SL_ERROR(logger(), "Error: twenty args: {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}",
            1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20);
-  EXPECT_TRUE(logger_->last_level == Level::ERROR);
+  EXPECT_TRUE(logger_->last_level == Level::ERROR_);
   EXPECT_TRUE(logger_->last_message == "Error: twenty args: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20");
 
   SL_CRITICAL(logger(), "Critical: twenty args: {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}",
@@ -202,8 +202,8 @@ TEST_F(MacrosTest, CustomLevel) {
   EXPECT_TRUE(logger_->last_level == Level::WARN);
   EXPECT_TRUE(logger_->last_message == "Custom: warning");
 
-  SL_LOG(logger(), calculatedLevel(Level::ERROR), "Custom: {}", "error");
-  EXPECT_TRUE(logger_->last_level == Level::ERROR);
+  SL_LOG(logger(), calculatedLevel(Level::ERROR_), "Custom: {}", "error");
+  EXPECT_TRUE(logger_->last_level == Level::ERROR_);
   EXPECT_TRUE(logger_->last_message == "Custom: error");
 
   // clang-format off

@@ -89,7 +89,7 @@ endif()
   _SL_LOG((LOG), soralog::Level::WARN, (FMT), ##__VA_ARGS__)
 
 #define SL_ERROR(LOG, FMT, ...) \
-  _SL_LOG((LOG), soralog::Level::ERROR, (FMT), ##__VA_ARGS__)
+  _SL_LOG((LOG), soralog::Level::ERROR_, (FMT), ##__VA_ARGS__)
 
 #define SL_CRITICAL(LOG, FMT, ...) \
   _SL_LOG((LOG), soralog::Level::CRITICAL, (FMT), ##__VA_ARGS__)
@@ -122,7 +122,7 @@ endif()
   _SL_LOG_DF((LOG), soralog::Level::WARN, (FMT), ##__VA_ARGS__)
 
 #define SL_ERROR_DF(LOG, FMT, ...) \
-  _SL_LOG_DF((LOG), soralog::Level::ERROR, (FMT), ##__VA_ARGS__)
+  _SL_LOG_DF((LOG), soralog::Level::ERROR_, (FMT), ##__VA_ARGS__)
 
 #define SL_CRITICAL_DF(LOG, FMT, ...) \
   _SL_LOG_DF((LOG), soralog::Level::CRITICAL, (FMT), ##__VA_ARGS__)

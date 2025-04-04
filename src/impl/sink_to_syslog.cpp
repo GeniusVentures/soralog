@@ -8,11 +8,17 @@
 #include <soralog/impl/sink_to_syslog.hpp>
 
 #include <chrono>
+#include <cstring>
 #include <iomanip>
 #include <iostream>
 
 #include <fmt/chrono.h>
+
+#ifdef _WIN32
+#include <windows.h>
+#else
 #include <syslog.h>
+#endif
 
 namespace soralog {
 
@@ -96,7 +102,10 @@ namespace soralog {
       throw std::runtime_error(
           "SinkToSyslog has not created: Syslog already opened");
     }
+
+#ifndef _WIN32
     openlog(ident_.c_str(), LOG_PID | LOG_NDELAY, LOG_USER);
+#endif
 
     if (latency_ != std::chrono::milliseconds::zero()) {
       sink_worker_ = std::make_unique<std::thread>([this] { run(); });
@@ -114,7 +123,9 @@ namespace soralog {
     } else {
       flush();
     }
+#ifndef _WIN32
     closelog();
+#endif
     syslog_is_opened_.store(true, std::memory_order_release);
   }
 
@@ -213,22 +224,22 @@ namespace soralog {
             must_log = false;
             break;
           case Level::CRITICAL:
-            priority = LOG_EMERG;  // system is unusable
+            priority = 0;  // system is unusable
             break;
-          case Level::ERROR:  // error conditions
-            priority = LOG_ALERT;
+          case Level::ERROR_:  // error conditions
+            priority = 1;
             break;
           case Level::WARN:  // warning conditions
-            priority = LOG_WARNING;
+            priority = 4;
             break;
           case Level::INFO:  // normal but significant condition
-            priority = LOG_NOTICE;
+            priority = 5;
             break;
           case Level::VERBOSE:  // informational
-            priority = LOG_INFO;
+            priority = 6;
             break;
           case Level::DEBUG:  // debug-level messages
-            priority = LOG_DEBUG;
+            priority = 7;
             break;
           case Level::TRACE:  // trace messages must not be logged by syslog
             [[fallthrough]];
@@ -238,8 +249,13 @@ namespace soralog {
         }
 
         if (must_log) {
+#ifndef _WIN32
           // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
           syslog(priority, "%s", begin);
+#else
+          OutputDebugStringA(begin);
+          OutputDebugStringA("\n");
+#endif
         }
 
         size_ -= event.message().size();

@@ -79,7 +79,7 @@ namespace soralog {
 
     void put_text_style(char *&ptr, Level level) {
       assert(level <= Level::TRACE);
-      if (level <= Level::ERROR) {
+      if (level <= Level::ERROR_) {
         put_style(ptr, fmt::detail::make_emphasis<char>(fmt::emphasis::bold));
       } else if (level >= Level::DEBUG) {
         put_style(ptr, fmt::detail::make_emphasis<char>(fmt::emphasis::italic));

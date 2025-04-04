@@ -67,7 +67,7 @@ namespace soralog {
 
           if constexpr (std::is_same_v<T, std::filesystem::path>) {
             try {
-              node = YAML::LoadFile(arg);
+              node = YAML::LoadFile(arg.string());
             } catch (const std::exception &exception) {
               errors_ << "E: Can't parse file "
                       << std::filesystem::weakly_canonical(arg) << ": "
@@ -182,7 +182,7 @@ namespace soralog {
       return Level::CRITICAL;
     }
     if (level_string == "error") {
-      return Level::ERROR;
+      return Level::ERROR_;
     }
     if (level_string == "warning" || level_string == "warn") {
       return Level::WARN;

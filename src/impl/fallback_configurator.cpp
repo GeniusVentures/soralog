@@ -19,9 +19,9 @@ namespace soralog {
         "console", level_, SinkToConsole::Stream::STDOUT, with_color_);
     system.makeGroup("*", {}, "console", level_);
 
-    return {.has_error = false,
-            .has_warning = true,
-            .message = std::string()
+    return {false,
+            true,
+            std::string()
                      + "I: Using fallback configurator for logger system\n"
                        "I: All logs will be write into "
                      + (with_color_ ? "color " : "") + "standard output with '"
