@@ -61,7 +61,7 @@ namespace soralog {
     void put_reset_style(char *&ptr) {
       const auto &style = reset_color;
       auto size = std::end(style) - std::begin(style);
-      std::memcpy(ptr, std::begin(style), size);
+      style.copy(ptr, size);
       ptr = ptr + size;  // NOLINT
     }
 
