@@ -60,7 +60,7 @@ namespace soralog {
     std::atomic_bool need_to_rotate_ = false;
     std::atomic<std::chrono::steady_clock::time_point> next_flush_ =
         std::chrono::steady_clock::time_point();
-    std::atomic_flag flush_in_progress_ = false;
+    std::atomic_flag flush_in_progress_;
   };
 
 }  // namespace soralog

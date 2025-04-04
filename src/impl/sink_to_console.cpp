@@ -152,6 +152,7 @@ namespace soralog {
         stream_(stream_type == Stream::STDERR ? std::cerr : std::cout),
         with_color_(with_color),
         buff_(max_buffer_size_) {
+    flush_in_progress_.clear();
     if (latency_ != std::chrono::milliseconds::zero()) {
       sink_worker_ = std::make_unique<std::thread>([this] { run(); });
     }

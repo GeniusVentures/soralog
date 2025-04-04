@@ -87,6 +87,7 @@ namespace soralog {
              latency.value_or(1000)),                // 1 sec
         path_(std::move(path)),
         buff_(max_buffer_size_) {
+    flush_in_progress_.clear();
     out_.open(path_, std::ios::app);
     if (!out_.is_open()) {
       std::cerr << "Can't open log file '" << path_ << "': " << strerror(errno)

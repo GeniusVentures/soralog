@@ -38,7 +38,7 @@ namespace soralog {
       }
 
       // NOLINTNEXTLINE(cppcoreguidelines-non-private-member-variables-in-classes)
-      std::atomic_flag busy{false};
+      std::atomic_flag busy;
 
      private:
       // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,modernize-avoid-c-arrays)

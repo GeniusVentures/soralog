@@ -89,6 +89,7 @@ namespace soralog {
              latency.value_or(1000)),                // 1 sec
         ident_(std::move(ident)),
         buff_(max_buffer_size_) {
+    flush_in_progress_.clear();
     bool false_v = false;
     if (!syslog_is_opened_.compare_exchange_strong(
             false_v, true, std::memory_order_acq_rel)) {
