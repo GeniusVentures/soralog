@@ -120,7 +120,7 @@ namespace soralog {
               Level level,
               const Format &format,
               const Args &...args) noexcept(IF_RELEASE) {
-      if (level_ < level || level == Level::OFF || level == Level::IGNORE) {
+      if (level_ < level || level == Level::OFF || level == Level::IGNORE_) {
         return;
       }
       if (underlying_sinks_.empty()) {

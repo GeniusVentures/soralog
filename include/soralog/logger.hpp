@@ -46,7 +46,7 @@ namespace soralog {
 #endif
     void push(Level level, const Format &format, const Args &...args) {
       if (level_ >= level) {
-        if (level != Level::OFF && level != Level::IGNORE) {
+        if (level != Level::OFF && level != Level::IGNORE_) {
           sink_->push(name_, level, format, args...);
           if (level_ >= Level::CRITICAL) {
             sink_->flush();
