@@ -35,7 +35,6 @@ add_library(sink_to_console
     )
 target_link_libraries(sink_to_console
     sink
-    pthread
     )
 
 add_library(sink_to_file
@@ -43,7 +42,6 @@ add_library(sink_to_file
     )
 target_link_libraries(sink_to_file
     sink
-    pthread
     )
 
 add_library(sink_to_syslog
@@ -51,7 +49,6 @@ add_library(sink_to_syslog
     )
 target_link_libraries(sink_to_syslog
     sink
-    pthread
     )
 
 add_library(multisink
