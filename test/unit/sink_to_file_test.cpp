@@ -7,6 +7,8 @@
 
 #include <gtest/gtest.h>
 
+#include <fstream>
+
 #include "soralog/impl/sink_to_file.hpp"
 
 using namespace soralog;
@@ -45,17 +47,29 @@ class SinkToFileTest : public ::testing::Test {
     std::remove(path_.native().data());
   }
 
-  std::shared_ptr<FakeLogger> createLogger(std::chrono::milliseconds latency) {
+  std::shared_ptr<FakeLogger> createLogger(std::chrono::milliseconds latency,
+                                           size_t capacity = 4) {
     auto sink = std::make_shared<SinkToFile>(
         "file",
         Level::TRACE,
         path_,
         Sink::ThreadInfoType::NONE,  // ignore thread info
-        4,                           // capacity: 4 events
+        capacity,                    // capacity: events
         64,                          // max message length: 64 byte
         16384,                       // buffers size: 16 Kb
         latency.count());
     return std::make_shared<FakeLogger>(std::move(sink));
+  }
+
+  size_t countLines() const {
+    std::ifstream in(path_);
+    size_t lines = 0;
+    for (std::string line; std::getline(in, line);) {
+      if (not line.empty()) {
+        ++lines;
+      }
+    }
+    return lines;
   }
 
  private:
@@ -74,4 +88,30 @@ TEST_F(SinkToFileTest, Logging) {
     }
   }
   logger->flush();
+}
+
+// A queued event must not cost a whole latency_ to reach the file. flush() used
+// to write one event and return, so N queued events took N * latency_ to drain
+// and teardown blocked in the worker join() for just as long.
+TEST_F(SinkToFileTest, DrainsWholeQueueAtOnce) {
+  constexpr size_t kCount = 10;
+  constexpr auto kLatency = 1000ms;
+
+  auto started = std::chrono::steady_clock::now();
+  {
+    // Capacity above kCount, so no event is drained by push() hitting a full
+    // queue -- the whole batch has to be waiting when the sink is destroyed.
+    auto logger = createLogger(kLatency, kCount * 2);
+    for (size_t i = 1; i <= kCount; ++i) {
+      logger->debug("message: {}", i);
+    }
+  }  // sink destroyed here; it must drain all kCount events in one pass
+  auto elapsed = std::chrono::steady_clock::now() - started;
+
+  auto elapsed_ms =
+      std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
+  EXPECT_LT(elapsed_ms, kCount * kLatency / 2)
+      << "took " << elapsed_ms.count() << "ms; one event per latency_ would be "
+      << (kCount * kLatency).count() << "ms";
+  EXPECT_EQ(countLines(), kCount) << "events were dropped while draining";
 }

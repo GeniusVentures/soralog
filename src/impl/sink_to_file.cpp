@@ -100,6 +100,11 @@ namespace soralog {
   SinkToFile::~SinkToFile() {
     if (latency_ != std::chrono::milliseconds::zero()) {
       need_to_finalize_.store(true, std::memory_order_release);
+      // run() reads the flags outside mutex_, so the notify below is lost if
+      // the worker is not already inside wait_until(). Expire the deadline too,
+      // or that lost wake-up costs a full latency_ per sink at teardown.
+      next_flush_.store(std::chrono::steady_clock::now(),
+                        std::memory_order_release);
       async_flush();
       if (sink_worker_ && sink_worker_->joinable()) {
         sink_worker_->join();
@@ -202,6 +207,12 @@ namespace soralog {
         appended = true;
       }
 
+      // `appended` must stay here: it is what resets ptr to begin after every
+      // record, and that is the only thing actually bounding buff_. The
+      // sizeof(Event) term is far smaller than a formatted record (which runs
+      // to max_message_length_ plus header), and put_string()/memcpy() above
+      // take no size limit, so batching records requires fixing this guard
+      // first.
       if ((end - ptr) < sizeof(Event) || appended
           || std::chrono::steady_clock::now()
                  >= next_flush_.load(std::memory_order_acquire)) {
@@ -211,15 +222,21 @@ namespace soralog {
         ptr = begin;
       }
 
-      if (appended) {
+      if (!appended) {
+        // Queue is drained. Publish what was written and stop; breaking
+        // unconditionally here handled one event per call, so a queue of N
+        // events took N * latency_ to clear. Clearing need_to_flush_ here
+        // rather than per event also stops it latching true forever when an
+        // async_flush() lands on an empty queue. Strong CAS: this is the only
+        // consumer of the flag and there is no retry after the break, so a
+        // spurious failure would silently drop the flush request.
         bool true_v = true;
-        if (need_to_flush_.compare_exchange_weak(
+        if (need_to_flush_.compare_exchange_strong(
                 true_v, false, std::memory_order_acq_rel)) {
           out_.flush();
         }
+        break;
       }
-
-      break;
     }
 
     bool true_v = true;
@@ -259,7 +276,7 @@ namespace soralog {
       {
         std::unique_lock lock(mutex_);
         if (condvar_.wait_until(lock,
-                                next_flush_.load(std::memory_order_relaxed))
+                                next_flush_.load(std::memory_order_acquire))
             == std::cv_status::no_timeout) {
           if (!need_to_flush_.load(std::memory_order_relaxed)
               && !need_to_finalize_.load(std::memory_order_relaxed)) {
