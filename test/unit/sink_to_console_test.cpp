@@ -36,14 +36,15 @@ class SinkToConsoleTest : public ::testing::Test {
     std::shared_ptr<SinkToConsole> sink_;
   };
 
-  std::shared_ptr<FakeLogger> createLogger(std::chrono::milliseconds latency) {
+  std::shared_ptr<FakeLogger> createLogger(std::chrono::milliseconds latency,
+                                           size_t capacity = 4) {
     auto sink = std::make_shared<SinkToConsole>(
         "console",
         Level::TRACE,
         SinkToConsole::Stream::STDOUT,  // standard output stream
         false,                          // no color
         Sink::ThreadInfoType::ID,       // ignore thread info
-        4,                              // capacity: 4 events
+        capacity,                       // capacity: events
         64,                             // max message length: 64 byte
         16384,                          // buffers size: 16 Kb
         latency.count());
@@ -154,4 +155,28 @@ TEST_F(SinkToConsoleTest, MultithreadLogging) {
   for (auto &t : threads) {
     t.join();
   }
+}
+
+// Mirror of SinkToFileTest.DrainsWholeQueueAtOnce: flush() used to write one
+// event per call, so N queued events took N * latency_ to drain and teardown
+// blocked in the worker join() for just as long.
+TEST_F(SinkToConsoleTest, DrainsWholeQueueAtOnce) {
+  constexpr size_t kCount = 10;
+  constexpr auto kLatency = 500ms;
+
+  auto started = std::chrono::steady_clock::now();
+  {
+    // Capacity above kCount so no event is drained by push() hitting a full
+    // queue -- the whole batch must be waiting when the sink is destroyed.
+    auto logger = createLogger(kLatency, kCount * 2);
+    for (size_t i = 1; i <= kCount; ++i) {
+      logger->debug("message: {}", i);
+    }
+  }  // sink destroyed here; it must drain all kCount events in one pass
+  auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+      std::chrono::steady_clock::now() - started);
+
+  EXPECT_LT(elapsed, kCount * kLatency / 2)
+      << "took " << elapsed.count() << "ms; one event per latency_ would be "
+      << (kCount * kLatency).count() << "ms";
 }
