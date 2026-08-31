@@ -171,6 +171,14 @@ namespace soralog {
      */
     virtual void rotate() noexcept = 0;
 
+    /**
+     * Releases the underlying destination resource (e.g. closes the log file)
+     * while the sink object itself may still be referenced by long-lived
+     * loggers. Default: nothing to release. Appended after the existing
+     * virtuals so already-compiled callers keep their vtable slots.
+     */
+    virtual void close() noexcept {}
+
    protected:
     // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     const std::string name_;

@@ -39,6 +39,8 @@ namespace soralog {
 
     void rotate() noexcept override;
 
+    void close() noexcept override;
+
     void flush() noexcept override;
 
    protected:

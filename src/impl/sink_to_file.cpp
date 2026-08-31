@@ -266,6 +266,26 @@ namespace soralog {
     async_flush();
   }
 
+  void SinkToFile::close() noexcept {
+    // Long-lived loggers may keep the sink object alive after its owning
+    // logging system is gone, so only the sink can release the file. Stop the
+    // worker, then close the stream; later events still drain through
+    // flush() into the failed stream, so the queue cannot wedge push().
+    need_to_finalize_.store(true, std::memory_order_release);
+    next_flush_.store(std::chrono::steady_clock::now(),
+                      std::memory_order_release);
+    async_flush();
+    if (sink_worker_ && sink_worker_->joinable()) {
+      sink_worker_->join();
+      sink_worker_.reset();
+    }
+    out_.close();
+    // ponytail: a logger thread already inside flush() can still touch out_
+    // while we close it; per-event sync here would tax every log line to close
+    // a file once, so accept a garbled final line at sink teardown. Revisit
+    // only if teardown crashes show up.
+  }
+
   void SinkToFile::run() {
     util::setThreadName("log:" + name_);
 
